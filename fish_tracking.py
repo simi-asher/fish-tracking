@@ -1,5 +1,5 @@
 # USAGE
-# python fish_tracking.py --video videos/12.avi --tracker csrt
+# python fish_tracking.py --video videos/Video/1.avi --tracker csrt
 
 # import the necessary packages
 from imutils.video import VideoStream
@@ -176,9 +176,14 @@ while True:
 		firstFrame=read_frame(firstFrame)
 		firstFrame = imutils.resize(firstFrame, width=400)
 		h, w, channels = firstFrame.shape
-		print(h/2,w)
+		#print(h/2,w)
 		#firstFrame = firstFrame[0:h,60:w-90] #60
 		#grayA=modif_frame(firstFrame)
+		frame_height1=int(h/2)-70-30
+		frame_height2=h-40-(int(h/2)+50)
+		frame_width=w-90-60
+		out1 = cv2.VideoWriter('out1.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame_width,frame_height1))
+		out2 = cv2.VideoWriter('out2.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame_width,frame_height2))
 		top_ff=firstFrame[30:int(h/2)-70,60:w-90] #210,250
 		top_grayA=modif_frame(top_ff)
 		bottom_ff=firstFrame[int(h/2)+50:h-40,60:w-90] #210,250
@@ -251,11 +256,15 @@ while True:
 	# show the output frame
 		cv2.imshow("FrameA", frameA)
 		cv2.imshow("FrameB", frameB)
-	
+		# Write the frame into the file 
+		out1.write(frameA)
+		out2.write(frameB)
+
 	cv2.imshow("Threshold Frame A", threshA) 
 	# Displaying the black and white image in which if 
 	# intensity difference greater than 30 it will appear white 
 	cv2.imshow("Threshold Frame B", threshB) 
+	
 	time.sleep(0.2)
 	key = cv2.waitKey(1) & 0xFF
 
@@ -303,6 +312,8 @@ while True:
 	#	end=True
 	# if the `q` key was pressed, break from the loop
 	elif key == ord("q"):
+		out1.release()
+		out2.release()
 		break
 
 # if we are using a webcam, release the pointer
